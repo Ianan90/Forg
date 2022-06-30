@@ -37,7 +37,7 @@ protected:
 	FTimerHandle TimerHandle_SpawnBots;
 
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
-	float SpawnTimerInterval = 2.0f;
+	float SpawnTimerInterval;
 
 	UFUNCTION()
 	void SpawnBotTimerElapsed();
