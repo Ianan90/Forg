@@ -10,7 +10,6 @@
 #include "SAttributeComponent.h"
 #include "SInteractionComponent.h"
 
-
 // Sets default values
 ASCharacter::ASCharacter()
 {
@@ -52,21 +51,27 @@ void ASCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	// -- Rotation Visualization -- //
-	const float DrawScale = 100.0f;
-	const float Thickness = 5.0f;
+	// TODO - Debug Vis, move this functionlity to a CVAR
+	if (false)
+	{
+		// -- Rotation Visualization -- //
+		const float DrawScale = 100.0f;
+		const float Thickness = 5.0f;
 
-	FVector LineStart = GetActorLocation();
-	// Offset to the right of pawn
-	LineStart += GetActorRightVector() * 100.0f;
-	// Set line end in direction of the actor's forward
-	FVector ActorDirection_LineEnd = LineStart + (GetActorForwardVector() * 100.0f);
-	// Draw Actor's Direction
-	DrawDebugDirectionalArrow(GetWorld(), LineStart, ActorDirection_LineEnd, DrawScale, FColor::Yellow, false, 0.0f, 0, Thickness);
+		FVector LineStart = GetActorLocation();
+		// Offset to the right of pawn
+		LineStart += GetActorRightVector() * 100.0f;
 
-	FVector ControllerDirection_LineEnd = LineStart + (GetControlRotation().Vector() * 100.0f);
-	// Draw 'Controller' Rotation ('PlayerController' that 'possessed' this character)
-	DrawDebugDirectionalArrow(GetWorld(), LineStart, ControllerDirection_LineEnd, DrawScale, FColor::Green, false, 0.0f, 0, Thickness);
+		// Set line end in direction of the actor's forward
+		FVector ActorDirection_LineEnd = LineStart + (GetActorForwardVector() * 100.0f);
+
+		// Draw Actor's Direction
+		DrawDebugDirectionalArrow(GetWorld(), LineStart, ActorDirection_LineEnd, DrawScale, FColor::Yellow, false, 0.0f, 0, Thickness);
+
+		FVector ControllerDirection_LineEnd = LineStart + (GetControlRotation().Vector() * 100.0f);
+		// Draw 'Controller' Rotation ('PlayerController' that 'possessed' this character)
+		DrawDebugDirectionalArrow(GetWorld(), LineStart, ControllerDirection_LineEnd, DrawScale, FColor::Green, false, 0.0f, 0, Thickness);
+	}
 }
 
 // Called to bind functionality to input
@@ -99,10 +104,6 @@ void ASCharacter::MoveRight(float Value)
 	FRotator ControlRot = GetControlRotation();
 	ControlRot.Pitch = 0.0f;
 	ControlRot.Roll = 0.0f;
-
-	// X = Forward (Red)
-	// Y = Right (Green)
-	// Z = Up (Blue)
 	FVector RightVector = FRotationMatrix(ControlRot).GetScaledAxis(EAxis::Y);
 	
 	AddMovementInput(RightVector, Value);
@@ -126,19 +127,40 @@ void ASCharacter::PrimaryAttack()
 
 void ASCharacter::PrimaryAttack_TimeElapsed()
 {
-	if (ensure(ProjectileClass))
-	{
-		
-	}
-	// Set HandLocation by getting the Skeletal Mesh Hand Socket
+	// Set Vector Locations required.
+	FVector StartLocation = CameraComp->GetComponentLocation();
+	FVector EndLocation = CameraComp->GetComponentLocation() + (GetControlRotation().Vector() * 5000);
 	FVector HandLocation = GetMesh()->GetSocketLocation("Muzzle_01");
-	
-	FTransform SpawnTM = FTransform(GetControlRotation() ,HandLocation);
+
+	// Add query params for line trace to react against. 
+	FCollisionObjectQueryParams ObjectQueryParams;
+	ObjectQueryParams.AddObjectTypesToQuery(ECC_WorldStatic);
+	ObjectQueryParams.AddObjectTypesToQuery(ECC_Pawn);
+
+	// If we hit something, set ImpactPoint to Hit.Impact otherwise, Trace End.
+	FHitResult Hit;
+	bool bBlockingHit = GetWorld()->LineTraceSingleByObjectType(Hit, StartLocation, EndLocation, ObjectQueryParams);
+	FVector ImpactPoint = Hit.TraceEnd;
+	if (bBlockingHit)
+	{
+		ImpactPoint = Hit.ImpactPoint;
+	}
+
+	// Basically the same as GetLookAtRotation except we don't need to include KismetMathLib.
+	FRotator ProjectileRot = FRotationMatrix::MakeFromX(EndLocation - HandLocation).Rotator();
+
+	// Set Projectile spawn params. 
+	FTransform SpawnTM = FTransform(ProjectileRot ,HandLocation);
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	SpawnParams.Instigator = this;
-	
+
+	// Spawn the projectile. 
 	GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawnTM, SpawnParams);
+
+	// Trace for Fire Direction
+	// DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Purple, false, 3.0f, 0, 2.0f);
+
 }
 
 void ASCharacter::OnHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComp, float NewHealth,
