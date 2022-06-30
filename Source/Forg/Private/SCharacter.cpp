@@ -137,17 +137,24 @@ void ASCharacter::PrimaryAttack_TimeElapsed()
 	ObjectQueryParams.AddObjectTypesToQuery(ECC_WorldStatic);
 	ObjectQueryParams.AddObjectTypesToQuery(ECC_Pawn);
 
+	// Ensure we ignore this actor in the projectile line trace.
+	FCollisionQueryParams QueryParams;
+	QueryParams.AddIgnoredActor(this);
+
 	// If we hit something, set ImpactPoint to Hit.Impact otherwise, Trace End.
 	FHitResult Hit;
-	bool bBlockingHit = GetWorld()->LineTraceSingleByObjectType(Hit, StartLocation, EndLocation, ObjectQueryParams);
+	bool bBlockingHit = GetWorld()->LineTraceSingleByObjectType(Hit, StartLocation, EndLocation, ObjectQueryParams, QueryParams);
 	FVector ImpactPoint = Hit.TraceEnd;
 	if (bBlockingHit)
 	{
 		ImpactPoint = Hit.ImpactPoint;
 	}
+	
+	// Draw Sphere at impact point
+	// DrawDebugSphere(GetWorld(), ImpactPoint, 30.0f, 32, FColor::Black, false, 3.0f);
 
 	// Basically the same as GetLookAtRotation except we don't need to include KismetMathLib.
-	FRotator ProjectileRot = FRotationMatrix::MakeFromX(EndLocation - HandLocation).Rotator();
+	FRotator ProjectileRot = FRotationMatrix::MakeFromX(ImpactPoint - HandLocation).Rotator();
 
 	// Set Projectile spawn params. 
 	FTransform SpawnTM = FTransform(ProjectileRot ,HandLocation);
