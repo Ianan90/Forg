@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "SWorldUserWidget.h"
 #include "GameFramework/Character.h"
 #include "SAICharacter.generated.h"
 
@@ -26,6 +27,11 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	USAttributeComponent* AttributeComp;
+
+	UPROPERTY(EditDefaultsOnly, Category = "UI")
+	TSubclassOf<USWorldUserWidget> HealthBarWidgetClass;
+	
+	USWorldUserWidget* ActiveHealthBar;
 
 	UFUNCTION()
 	void OnPawnSeen(APawn* Pawn);

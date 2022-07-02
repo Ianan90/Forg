@@ -7,8 +7,9 @@
 #include "BrainComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Perception/PawnSensingComponent.h"
-#include "DrawDebugHelpers.h"
 #include "SAttributeComponent.h"
+#include "SWorldUserWidget.h"
+#include "Blueprint/UserWidget.h"
 
 
 // Sets default values
@@ -40,6 +41,17 @@ void ASAICharacter::OnHealthChanged(AActor* InstigatorActor, USAttributeComponen
 		if (InstigatorActor != this)
 		{
 			SetTargetActor(InstigatorActor);
+		}
+
+
+		if (ActiveHealthBar == nullptr)
+		{
+			ActiveHealthBar = CreateWidget<USWorldUserWidget>(GetWorld(), HealthBarWidgetClass);
+			if (ActiveHealthBar)
+			{
+				ActiveHealthBar->AttachedActor = this;
+				ActiveHealthBar->AddToViewport();
+			}
 		}
 		
 		if (NewHealth <= 0.0f)
@@ -75,3 +87,4 @@ void ASAICharacter::OnPawnSeen(APawn* Pawn)
 	SetTargetActor(Pawn);
 	// DrawDebugString(GetWorld(), GetActorLocation(), "PLAYER SPOTTED", nullptr, FColor::White, 4.0f, true);
 }
+

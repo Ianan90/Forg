@@ -32,10 +32,17 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool IsAlive() const;
 
-	float GetHealth();
+	UFUNCTION(BlueprintCallable)
+	float GetHealthMax() const;
 
-	bool IsFullHealth();
+	UFUNCTION(BlueprintCallable)
+	float GetHealth() const;
 
+	UFUNCTION(BlueprintCallable)
+	bool IsFullHealth() const;
+
+	UFUNCTION(BlueprintCallable)
+	bool Kill(AActor* InstigatorActor);
 	
 
 protected:
