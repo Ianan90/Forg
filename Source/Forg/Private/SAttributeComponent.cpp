@@ -13,7 +13,6 @@ USAttributeComponent::USAttributeComponent()
 	// ...
 }
 
-
 // Called when the game starts
 void USAttributeComponent::BeginPlay()
 {
@@ -22,7 +21,6 @@ void USAttributeComponent::BeginPlay()
 	// ...
 	
 }
-
 
 // Called every frame
 void USAttributeComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)

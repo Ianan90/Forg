@@ -171,16 +171,19 @@ void ASCharacter::PrimaryAttack_TimeElapsed()
 
 	// TODO: Need a better solution for getting and setting the Muzzle VFX. Should be handled elsewhere.
 	UGameplayStatics::SpawnEmitterAttached(MuzzleVFX,GetMesh(), HandSocketName, FVector::ZeroVector, FRotator::ZeroRotator, EAttachLocation::SnapToTarget);
-
-
+	
 	// Trace for Fire Direction
 	// DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Purple, false, 3.0f, 0, 2.0f);
-
 }
 
 void ASCharacter::OnHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComp, float NewHealth,
 	float Delta)
 {
+	if (Delta < 0.0f)
+	{
+		GetMesh()->SetScalarParameterValueOnMaterials("TimeToHit", GetWorld()->TimeSeconds);
+	}
+	
 	if (NewHealth <= 0.0f && Delta < 0.0f)
 	{
 		APlayerController* PlayerController = Cast<APlayerController>(GetController());

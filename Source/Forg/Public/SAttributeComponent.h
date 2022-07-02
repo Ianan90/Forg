@@ -44,5 +44,5 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Attributes")
 	float Health = 100.0f;
-		
+	
 };
