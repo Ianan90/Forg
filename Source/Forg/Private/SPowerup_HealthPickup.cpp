@@ -24,7 +24,7 @@ void ASPowerup_HealthPickup::Interact_Implementation(APawn* InstigatorPawn)
 	if (!AttributeComp->IsFullHealth())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Healing!"));
-		AttributeComp->ApplyHealthChange(HealDelta);
+		AttributeComp->ApplyHealthChange(this, HealDelta);
 		DeactivatePickup();
 	}
 }
