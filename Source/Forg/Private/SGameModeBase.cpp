@@ -22,7 +22,7 @@ void ASGameModeBase::StartPlay()
 }
 
 void ASGameModeBase::SpawnBotTimerElapsed()
-{
+{	
 	int32 NrOfAliveBots = 0;
 	// TActorIterator lets us grab any instance of a particular class in current level.
 	// Similar to GetAllActorsOfClass in BP.
@@ -74,6 +74,7 @@ void ASGameModeBase::OnQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryIn
 	{
 		GetWorld()->SpawnActor<AActor>(MinionClass, Locations[0], FRotator::ZeroRotator);
 
+		// Track bot spawned locations
 		DrawDebugSphere(GetWorld(), Locations[0], 50.0f, 20, FColor::Blue, false, 60.0f);
 	}
 }
