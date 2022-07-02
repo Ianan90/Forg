@@ -29,6 +29,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool IsAlive() const;
 
+	float GetHealth();
+
+	bool IsFullHealth();
+
+	
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;

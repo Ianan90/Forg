@@ -9,6 +9,8 @@
 #include "DrawDebugHelpers.h"
 #include "SAttributeComponent.h"
 #include "SInteractionComponent.h"
+#include "SProjectileBase.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ASCharacter::ASCharacter()
@@ -28,6 +30,8 @@ ASCharacter::ASCharacter()
 	AttributeComp = CreateDefaultSubobject<USAttributeComponent>("AttributeComp");
 
 	GetCharacterMovement()->bOrientRotationToMovement = true;
+
+	HandSocketName = "Muzzle_01";
 	
 	bUseControllerRotationYaw = false;
 }
@@ -130,7 +134,7 @@ void ASCharacter::PrimaryAttack_TimeElapsed()
 	// Set Vector Locations required.
 	FVector StartLocation = CameraComp->GetComponentLocation();
 	FVector EndLocation = CameraComp->GetComponentLocation() + (GetControlRotation().Vector() * 5000);
-	FVector HandLocation = GetMesh()->GetSocketLocation("Muzzle_01");
+	FVector HandLocation = GetMesh()->GetSocketLocation(HandSocketName);
 
 	// Add query params for line trace to react against. 
 	FCollisionObjectQueryParams ObjectQueryParams;
@@ -161,9 +165,13 @@ void ASCharacter::PrimaryAttack_TimeElapsed()
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	SpawnParams.Instigator = this;
-
+	
 	// Spawn the projectile. 
 	GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawnTM, SpawnParams);
+
+	// TODO: Need a better solution for getting and setting the Muzzle VFX. Should be handled elsewhere.
+	UGameplayStatics::SpawnEmitterAttached(MuzzleVFX,GetMesh(), HandSocketName, FVector::ZeroVector, FRotator::ZeroRotator, EAttachLocation::SnapToTarget);
+
 
 	// Trace for Fire Direction
 	// DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Purple, false, 3.0f, 0, 2.0f);

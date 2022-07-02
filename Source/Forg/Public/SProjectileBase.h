@@ -10,8 +10,9 @@
 class USphereComponent;
 class UProjectileMovementComponent;
 class UParticleSystemComponent;
+class USoundBase;
 
-UCLASS()
+UCLASS(Abstract)
 class FORG_API ASProjectileBase : public AActor
 {
 	GENERATED_BODY()
@@ -19,17 +20,13 @@ class FORG_API ASProjectileBase : public AActor
 public:	
 	// Sets default values for this actor's properties
 	ASProjectileBase();
-	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
+protected:	
 	UFUNCTION()
-	void OnActorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	void OnActorHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
+	void PostInitializeComponents() override;
+	
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	USphereComponent* SphereComp;
 
@@ -39,4 +36,14 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	UParticleSystemComponent* EffectComp;
 
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	UAudioComponent* AudioComp;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Audio")
+	USoundBase* ImpactSFX;
+
+	UFUNCTION(BlueprintNativeEvent)
+	void Explode();
 };
+
+

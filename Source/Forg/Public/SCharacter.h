@@ -48,8 +48,12 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	USAttributeComponent* AttributeComp;
 
+	UPROPERTY(EditDefaultsOnly, Category = "VFX")
+	UParticleSystem* MuzzleVFX;
+	
 	FTimerHandle TimeHandle_PrimaryAttack;
-
+	
+	FName HandSocketName;
 	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
