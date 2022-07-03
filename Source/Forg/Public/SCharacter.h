@@ -75,4 +75,6 @@ protected:
 	UFUNCTION()
 	void OnHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComp, float NewHealth, float Delta);
 
+	virtual FVector GetPawnViewLocation() const override;
+
 };

@@ -21,7 +21,7 @@ ASGameModeBase::ASGameModeBase()
 void ASGameModeBase::StartPlay()
 {
 	Super::StartPlay();
-
+	
 	GetWorldTimerManager().SetTimer(TimerHandle_SpawnBots, this, &ASGameModeBase::SpawnBotTimerElapsed, SpawnTimerInterval, true);
 }
 
@@ -57,7 +57,13 @@ void ASGameModeBase::KillAllAI()
 }
 
 void ASGameModeBase::SpawnBotTimerElapsed()
-{	
+{
+	if (!CVArSpawnBots.GetValueOnGameThread())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Bot spawning disabled via cvar 'CVarSpawnBots."));
+		return;
+	}
+	
 	int32 NrOfAliveBots = 0;
 	// TActorIterator lets us grab any instance of a particular class in current level.
 	// Similar to GetAllActorsOfClass in BP.

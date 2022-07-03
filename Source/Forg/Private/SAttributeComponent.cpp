@@ -5,6 +5,9 @@
 
 #include "SGameModeBase.h"
 
+static TAutoConsoleVariable<float> CVArDamageMultiplier(TEXT("su.SetDamageMultiplier"), 1.0f, TEXT("Set damage multipler value"), ECVF_Cheat);
+
+
 // Sets default values for this component's properties
 USAttributeComponent::USAttributeComponent()
 {
@@ -17,10 +20,16 @@ USAttributeComponent::USAttributeComponent()
 
 bool USAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float Delta)
 {
-	// Check for God mode
-	if (!GetOwner()->CanBeDamaged())
+	// Check for God mode and ensure delta is damage
+	if (!GetOwner()->CanBeDamaged() && Delta < 0.0f)
 	{
 		return false;
+	}
+
+	if (Delta < 0.0f)
+	{
+		float DamageMultiplier = CVArDamageMultiplier.GetValueOnGameThread();
+		Delta *= DamageMultiplier;
 	}
 	
 	float OldHealth = Health;
