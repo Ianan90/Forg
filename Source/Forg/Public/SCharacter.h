@@ -11,6 +11,7 @@ class USpringArmComponent;
 class USInteractionComponent;
 class USAttributeComponent;
 class UAnimMontage;
+class USActionComponent;
 
 UCLASS()
 class FORG_API ASCharacter : public ACharacter
@@ -51,6 +52,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	USAttributeComponent* AttributeComp;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	USActionComponent* ActionComp;
+
 	UPROPERTY(EditDefaultsOnly, Category = "VFX")
 	UParticleSystem* MuzzleVFX;
 	
@@ -70,6 +74,10 @@ protected:
 	void PrimaryInteract();
 
 	void PrimaryAttack_TimeElapsed();
+
+	void SprintStart();
+
+	void SprintStop();
 
 	
 	UFUNCTION()
