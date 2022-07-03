@@ -33,12 +33,6 @@ public:
 
 protected:
 	virtual void PostInitializeComponents() override;
-
-	UPROPERTY(EditAnywhere, Category = "Attack")
-	TSubclassOf<AActor> ProjectileClass;
-
-	UPROPERTY(EditAnywhere, Category = "Attack")
-	UAnimMontage* AttackAnim;
 	
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	USpringArmComponent* SpringArmComp;
@@ -54,13 +48,6 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	USActionComponent* ActionComp;
-
-	UPROPERTY(EditDefaultsOnly, Category = "VFX")
-	UParticleSystem* MuzzleVFX;
-	
-	FTimerHandle TimeHandle_PrimaryAttack;
-	
-	FName HandSocketName;
 	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -72,9 +59,7 @@ protected:
 	void PrimaryAttack();
 
 	void PrimaryInteract();
-
-	void PrimaryAttack_TimeElapsed();
-
+	
 	void SprintStart();
 
 	void SprintStop();
