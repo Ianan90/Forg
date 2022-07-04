@@ -22,9 +22,6 @@ public:
 	// Sets default values for this character's properties
 	ASCharacter();
 	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
@@ -48,10 +45,8 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	USActionComponent* ActionComp;
-	
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
 
+	// Input functions
 	void MoveForward(float Value);
 	
 	void MoveRight(float Value);
