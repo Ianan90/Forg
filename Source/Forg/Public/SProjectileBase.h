@@ -42,7 +42,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Audio")
 	USoundBase* ImpactSFX;
 
-	UFUNCTION(BlueprintNativeEvent)
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void Explode();
 };
 
