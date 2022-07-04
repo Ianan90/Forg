@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "Components/ActorComponent.h"
 #include "SActionComponent.generated.h"
 
@@ -16,6 +17,11 @@ class FORG_API USActionComponent : public UActorComponent
 public:	
 
 	USActionComponent();
+
+	// This NEEDS to be #included because it is a struct, compiler needs to know size of the struct etc.
+	// When it's a pointer, forward declaring the class is not an issue as the size is already known. 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tags")
+	FGameplayTagContainer ActiveGameplayTags;
 
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
