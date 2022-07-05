@@ -6,6 +6,7 @@
 #include "EngineUtils.h"
 #include "SAttributeComponent.h"
 #include "SCharacter.h"
+#include "SPlayerState.h"
 #include "AI/SAICharacter.h"
 #include "EnvironmentQuery/EnvQueryManager.h"
 #include "EnvironmentQuery/EnvQueryInstanceBlueprintWrapper.h"
@@ -16,6 +17,10 @@ static TAutoConsoleVariable<bool> CVArSpawnBots(TEXT("su.SpawnBots"), true, TEXT
 ASGameModeBase::ASGameModeBase()
 {
 	SpawnTimerInterval = 5.0f;
+	CreditsPerKill = 25;
+	
+	PlayerStateClass = ASPlayerState::StaticClass();
+
 }
 
 void ASGameModeBase::StartPlay()
@@ -38,7 +43,15 @@ void ASGameModeBase::OnActorKilled(AActor* VictimActor, AActor* Killer)
 		float RespawnDelay = 2.0f;
 		GetWorldTimerManager().SetTimer(TimerHandle_RespawnDelay, Delegate, RespawnDelay, false);
 	}
-
+	
+	if (APawn* KillerPawn = Cast<APawn>(Killer))
+	{
+		if (ASPlayerState* PS = KillerPawn->GetPlayerState<ASPlayerState>())
+		{
+			PS->AddCredits(CreditsPerKill);
+		}
+	}
+	
 	UE_LOG(LogTemp, Log, TEXT("OnActorKilled: Victim: %s, Killer: %s"), *GetNameSafe(VictimActor), *GetNameSafe(Killer));
 }
 
@@ -51,7 +64,8 @@ void ASGameModeBase::KillAllAI()
 		USAttributeComponent* AttributeComp = USAttributeComponent::GetAttributes(Bot);
 		if (ensure(AttributeComp) && AttributeComp->IsAlive())
 		{
-			AttributeComp->Kill(this); // TODO: Pass in the player for debugging
+			// TODO: Pass in the player for debugging
+			AttributeComp->Kill(this); 
 		}
 	}
 }
