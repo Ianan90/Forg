@@ -30,6 +30,13 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	// Rep Notify binds to "OnRep_LidOpened" and calls it when that value is update on server. 
+	UPROPERTY(ReplicatedUsing="OnRep_LidOpened")
+	bool bLidOpened;
+
+	UFUNCTION()
+	void OnRep_LidOpened();
+	
 	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* BaseMesh;
 

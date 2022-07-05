@@ -29,6 +29,10 @@ public:
 	USWorldUserWidget* DefaultWidgetInstance;
 	
 protected:
+
+	UFUNCTION(Server, Reliable)
+	void ServerInteract(AActor* InFocus);
+	
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
