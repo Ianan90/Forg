@@ -39,6 +39,9 @@ public:
 
 protected:
 
+	UFUNCTION(Server, Reliable)
+	void ServerStartAction(AActor* Instigator, FName ActionName);
+
 	virtual void BeginPlay() override;
 
 	UPROPERTY(EditAnywhere, Category = "Actions")

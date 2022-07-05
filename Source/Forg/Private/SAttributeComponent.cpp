@@ -4,18 +4,18 @@
 #include "SAttributeComponent.h"
 
 #include "SGameModeBase.h"
+#include "Net/UnrealNetwork.h"
 
 static TAutoConsoleVariable<float> CVArDamageMultiplier(TEXT("su.SetDamageMultiplier"), 1.0f, TEXT("Set damage multipler value"), ECVF_Cheat);
 
 
-// Sets default values for this component's properties
+
 USAttributeComponent::USAttributeComponent()
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = true;
-
-	// ...
+	MaxHealth = 100.0f;
+	Health = MaxHealth;
+	
+	SetIsReplicatedByDefault(true);
 }
 
 bool USAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float Delta)
@@ -37,7 +37,11 @@ bool USAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float Delt
 	Health = FMath::Clamp(Health + Delta, 0.0f, MaxHealth);
 
 	float ActualDelta = Health - OldHealth;
-	OnHealthChanged.Broadcast(InstigatorActor, this, Health, Delta);
+	// OnHealthChanged.Broadcast(InstigatorActor, this, Health, Delta);
+	if (ActualDelta != 0.0f)
+	{
+		MulticastHealthChanged(InstigatorActor, Health, ActualDelta);
+	}
 
 	// Report death to GameMode 
 	if (ActualDelta < 0.0f && Health == 0.0f)
@@ -77,7 +81,6 @@ bool USAttributeComponent::Kill(AActor* InstigatorActor)
 	return ApplyHealthChange(InstigatorActor, -GetHealthMax());
 }
 
-
 USAttributeComponent* USAttributeComponent::GetAttributes(AActor* FromActor)
 {
 	if (FromActor)
@@ -97,4 +100,18 @@ bool USAttributeComponent::IsActorAlive(AActor* Actor)
 	}
 
 	return false;
+}
+
+// UNRELIABLE NETWORK REP
+void USAttributeComponent::MulticastHealthChanged_Implementation(AActor* InstigatorActor, float NewHealth, float Delta)
+{
+	OnHealthChanged.Broadcast(InstigatorActor, this, NewHealth, Delta);
+}
+
+void USAttributeComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(USAttributeComponent, Health);
+	DOREPLIFETIME(USAttributeComponent, MaxHealth);
 }

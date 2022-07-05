@@ -37,8 +37,6 @@ void ASItemChest::Tick(float DeltaTime)
 
 void ASItemChest::Interact_Implementation(APawn* InstigatorPawn)
 {
-	ISGameplayInterface::Interact_Implementation(InstigatorPawn);
-
 	// This called OnRep_LidOpened for CLIENTS
 	bLidOpened = !bLidOpened;
 	// Manually Called for the SERVER

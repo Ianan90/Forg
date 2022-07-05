@@ -46,10 +46,15 @@ public:
 	
 
 protected:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Attributes")
-	float MaxHealth = 100.0f;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Replicated, Category = "Attributes")
+	float MaxHealth;
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Attributes")
-	float Health = 100.0f;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Replicated, Category = "Attributes")
+	float Health;
+	
+	// Use multicast for transient events - things that do not change an ongoing state.
+	//Todo: Mark as UNRELIABLE once we move the 'State' out of SCharacter. Multicast Reliable has no relevancy importance, it is replicated to every client. 
+	UFUNCTION(NetMulticast, Reliable) 
+	void MulticastHealthChanged(AActor* InstigatorActor, float NewHealth, float Delta);
 	
 };
