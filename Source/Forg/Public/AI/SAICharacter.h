@@ -9,6 +9,7 @@
 
 class UPawnSensingComponent;
 class USAttributeComponent;
+class USActionComponent;
 
 UCLASS()
 class FORG_API ASAICharacter : public ACharacter
@@ -33,6 +34,9 @@ protected:
 	
 	USWorldUserWidget* ActiveHealthBar;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	USActionComponent* ActionComp;
+	
 	UFUNCTION()
 	void OnPawnSeen(APawn* Pawn);
 

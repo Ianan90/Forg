@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "SProjectileBase.h"
 #include "SMagicProjectile.generated.h"
 
@@ -21,4 +22,7 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
 	float DamageAmount;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Tags")
+	FGameplayTag ParryTag;
 };

@@ -47,7 +47,10 @@ void ASProjectileBase::Explode_Implementation()
 {
 	if (ensure(IsValid(this)))
 	{
-
+		// Todo: Change these particle effects over to Niagara systems. 
+		// Spawn the Projectile Impact VFX
+		UGameplayStatics::SpawnEmitterAtLocation(this, ImpactVFX, GetActorLocation(), GetActorRotation());
+		
 		// UGameplayStatics::PlaySoundAtLocation(this, ImpactSFX, GetActorLocation());
 		UGameplayStatics::PlaySoundAtLocation(this, ImpactSFX, GetActorLocation(), 0.2);
 		
