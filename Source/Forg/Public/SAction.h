@@ -27,15 +27,19 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, Category = "Action")
 	void StopAction(AActor* Instigator);
+
+	UFUNCTION(BlueprintCallable, Category = "Action")
+	bool IsRunning() const;
 	
 	// Action nickname to start/stop without a hard reference to the object
 	UPROPERTY(EditDefaultsOnly, Category = "Action")
 	FName ActionName;
 
-	UWorld* GetWorld() const override;
+	UPROPERTY(EditDefaultsOnly, Category = "Action")
+	bool bAutoStart;
 
-	UFUNCTION(BlueprintCallable, Category = "Action")
-	bool IsRunning() const;
+	UWorld* GetWorld() const override;
+	
 
 protected:
 
