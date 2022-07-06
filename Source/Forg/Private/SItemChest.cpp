@@ -21,6 +21,12 @@ ASItemChest::ASItemChest()
 
 }
 
+void ASItemChest::OnActorLoaded_Implementation()
+{
+	ISGameplayInterface::OnActorLoaded_Implementation();
+	OnRep_LidOpened();
+}
+
 // Called when the game starts or when spawned
 void ASItemChest::BeginPlay()
 {

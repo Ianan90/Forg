@@ -9,6 +9,7 @@
 
 class UEnvQuery;
 class UEnvQueryInstanceBlueprintWrapper;
+class USSaveGame;
 /**
  * 
  */
@@ -21,10 +22,20 @@ public:
 
 	ASGameModeBase();
 
+	void InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage) override;
+	
 	virtual void OnActorKilled(AActor* VictimActor, AActor* Killer);
 	
 	virtual void StartPlay() override;
 
+	UFUNCTION(BlueprintCallable, Category = "SaveGame")
+	void WriteSaveGame();
+
+	UFUNCTION(BlueprintCallable, Category = "SaveGame")
+	void LoadSaveGame();
+
+	void HandleStartingNewPlayer_Implementation(APlayerController* NewPlayer) override;
+	
 	UFUNCTION(Exec)
 	void KillAllAI();
 
@@ -55,5 +66,10 @@ protected:
 
 	UFUNCTION()
 	void RespawnPlayerElapsed(AController* Controller);
+
+	UPROPERTY()
+	USSaveGame* CurrentSaveGame;
+	
+	FString SlotName;
 
 };

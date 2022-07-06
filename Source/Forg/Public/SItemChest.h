@@ -26,12 +26,14 @@ public:
 	UPROPERTY(EditAnywhere)
 	float TargetPitch = 110.0f;
 
+	void OnActorLoaded_Implementation();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 	// Rep Notify binds to "OnRep_LidOpened" and calls it when that value is update on server. 
-	UPROPERTY(ReplicatedUsing="OnRep_LidOpened")
+	UPROPERTY(ReplicatedUsing="OnRep_LidOpened", BlueprintReadOnly, SaveGame)
 	bool bLidOpened;
 
 	UFUNCTION()
