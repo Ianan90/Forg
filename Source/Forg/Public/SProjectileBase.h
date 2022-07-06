@@ -25,7 +25,7 @@ protected:
 	UFUNCTION()
 	virtual void OnActorHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
-	void PostInitializeComponents() override;
+	virtual void PostInitializeComponents() override;
 	
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	USphereComponent* SphereComp;
@@ -47,7 +47,7 @@ protected:
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void Explode();
-	
+
 };
 
 

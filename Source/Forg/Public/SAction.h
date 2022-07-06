@@ -9,6 +9,21 @@
 
 class UWorld;
 class USActionComponent;
+
+USTRUCT()
+struct FActionRepData
+{
+	GENERATED_BODY()
+
+public:
+	// Struct data IS replicated by default
+	UPROPERTY()
+	bool bIsRunning;
+
+	UPROPERTY()
+	AActor* Instigator;
+};
+
 /**
  * 
  */
@@ -19,30 +34,42 @@ class FORG_API USAction : public UObject
 
 public:
 
+	void Initialize(USActionComponent* NewActionComp);
+
+	UPROPERTY(EditDefaultsOnly, Category = "Action")
+	bool bAutoStart;
+	
+	UFUNCTION(BlueprintCallable, Category = "Action")
+	bool IsRunning() const;
+	
 	UFUNCTION(BlueprintNativeEvent, Category = "Action")
 	bool CanStart(AActor* Instigator);
 
 	UFUNCTION(BlueprintNativeEvent, Category = "Action")
 	void StartAction(AActor* Instigator);
 
-	UFUNCTION(BlueprintNativeEvent, Category = "Action")
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Action")
 	void StopAction(AActor* Instigator);
-
-	UFUNCTION(BlueprintCallable, Category = "Action")
-	bool IsRunning() const;
 	
 	// Action nickname to start/stop without a hard reference to the object
 	UPROPERTY(EditDefaultsOnly, Category = "Action")
 	FName ActionName;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Action")
-	bool bAutoStart;
-
+	
 	UWorld* GetWorld() const override;
 	
+	bool IsSupportedForNetworking() const override
+	{
+		return true;
+	}
 
+	
 protected:
+	UPROPERTY(Replicated)
+	USActionComponent* ActionComp;
 
+	UFUNCTION(BlueprintCallable, Category = "Action")
+	USActionComponent* GetOwningComponent() const;
+	
 	// These NEED to be #included because it is a struct, compiler needs to know size of the struct etc.
 	// When it's a pointer, forward declaring the class is not an issue as the size is already known. 
 	UPROPERTY(EditDefaultsOnly, Category = "Tags")
@@ -51,9 +78,11 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Tags")
 	FGameplayTagContainer BlockedTags;
 
-	UFUNCTION(BlueprintCallable, Category = "Action")
-	USActionComponent* GetOwningComponent() const;
-
-	bool bIsRunning;
+	UPROPERTY(ReplicatedUsing="OnRep_RepData")
+	FActionRepData RepData;
+	// bool bIsRunning;
+	
+	UFUNCTION()
+	void OnRep_RepData();
 
 };

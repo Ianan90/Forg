@@ -29,11 +29,18 @@ ASProjectileBase::ASProjectileBase()
 
 	AudioComp = CreateDefaultSubobject<UAudioComponent>("AudioComp");
 	AudioComp->SetupAttachment(RootComponent);
+
+	// Directly set bool instead of going through SetReplicates(true) within constructor,
+	// Only use SetReplicates() outside constructor
+	bReplicates = true;
 }
 
 void ASProjectileBase::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
+	
+	// More consistent to bind here compared to Constructor which may fail to bind if Blueprint was created before adding this binding (or when using hotreload)
+	// PostInitializeComponent is the preferred way of binding any events.
 	SphereComp->OnComponentHit.AddDynamic(this, &ASProjectileBase::OnActorHit);
 }
 
