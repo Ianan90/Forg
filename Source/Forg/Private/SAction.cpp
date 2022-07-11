@@ -4,7 +4,6 @@
 #include "SAction.h"
 
 #include "SActionComponent.h"
-#include "Forg/Forg.h"
 #include "Net/UnrealNetwork.h"
 
 void USAction::StartAction_Implementation(AActor* Instigator)
@@ -17,6 +16,8 @@ void USAction::StartAction_Implementation(AActor* Instigator)
 
 	RepData.bIsRunning = true;
 	RepData.Instigator = Instigator;
+
+	GetOwningComponent()->OnActionStateStarted.Broadcast(GetOwningComponent(), this);
 }
 
 void USAction::StopAction_Implementation(AActor* Instigator)
@@ -32,6 +33,8 @@ void USAction::StopAction_Implementation(AActor* Instigator)
 
 	RepData.bIsRunning = false;
 	RepData.Instigator = Instigator;
+
+	GetOwningComponent()->OnActionStateStopped.Broadcast(GetOwningComponent(), this);
 }
 
 void USAction::Initialize(USActionComponent* NewActionComp)
