@@ -28,7 +28,7 @@ void USActionEffect::StartAction_Implementation(AActor* Instigator)
 		FTimerDelegate Delegate;
 		Delegate.BindUFunction(this, "ExecutePeriodicEffect", Instigator);
 
-		GetWorld()->GetTimerManager().SetTimer(PeriodHandle, Delegate, Period, false);
+		GetWorld()->GetTimerManager().SetTimer(PeriodHandle, Delegate, Period, true);
 	}
 }
 

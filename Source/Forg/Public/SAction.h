@@ -64,6 +64,10 @@ public:
 
 	
 protected:
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
+	UTexture2D* ActionIcon;
+	
 	UPROPERTY(Replicated)
 	USActionComponent* ActionComp;
 

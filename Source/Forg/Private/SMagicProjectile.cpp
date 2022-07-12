@@ -11,8 +11,7 @@
 // Sets default values
 ASMagicProjectile::ASMagicProjectile()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	InitialLifeSpan = 10.0f;
 	DamageAmount = 20.0f;
 }
 
@@ -27,7 +26,7 @@ void ASMagicProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedComponent,
 {
 	if (OtherActor && OtherActor != GetInstigator())
 	{
-		USActionComponent* ActionComp = Cast<USActionComponent>(GetComponentByClass(USActionComponent::StaticClass()));
+		USActionComponent* ActionComp = Cast<USActionComponent>(OtherActor->GetComponentByClass(USActionComponent::StaticClass()));
 		if (ActionComp && ActionComp->ActiveGameplayTags.HasTag(ParryTag))
 		{
 			MovementComp->Velocity = -MovementComp->Velocity;
@@ -39,6 +38,14 @@ void ASMagicProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedComponent,
 		if (USGameplayFunctionLibrary::ApplyDirectionalDamage(GetInstigator(), OtherActor, DamageAmount, SweepResult))
 		{
 			Explode();
+			UE_LOG(LogTemp, Warning, TEXT("Projectile Exploded"));
+
+			// TODO: Make this more abstract, maybe the SAction class should contain SActionEffect and not THIS projectile class.
+			if (ActionComp && HitEffect && HasAuthority())
+			{
+				ActionComp->AddAction(GetInstigator(), HitEffect);
+				UE_LOG(LogTemp, Warning, TEXT("Burning Effect Applied"));
+			}
 		}
 	}
 }

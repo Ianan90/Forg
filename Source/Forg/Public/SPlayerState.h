@@ -6,6 +6,8 @@
 #include "GameFramework/PlayerState.h"
 #include "SPlayerState.generated.h"
 
+class ASPlayerState; // Forward declared to satisfy the delegate macros below
+class USSaveGame;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnCreditsChanged, ASPlayerState*, PlayerState, int32, NewCredits, int32, Delta);
 
@@ -19,6 +21,7 @@ class FORG_API ASPlayerState : public APlayerState
 public:
 
 	// Get Credits
+	UFUNCTION(BlueprintCallable, Category = "Credits")
 	int32 GetCredits() const;
 
 	// Add Credits
@@ -39,6 +42,9 @@ public:
 
 protected:
 
-	UPROPERTY(BlueprintReadOnly, Category = "Credits")
+	UPROPERTY(EditDefaultsOnly, ReplicatedUsing="OnRep_CreditsUpdate", Category = "Credits")
 	int32 Credits;
+
+	UFUNCTION()
+	void OnRep_CreditsUpdate(int32 OldCredits);
 };

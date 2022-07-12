@@ -12,7 +12,7 @@ class UProjectileMovementComponent;
 class UParticleSystemComponent;
 class USoundBase;
 
-UCLASS(Abstract)
+UCLASS(ABSTRACT)
 class FORG_API ASProjectileBase : public AActor
 {
 	GENERATED_BODY()

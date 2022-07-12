@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
+#include "SActionEffect.h"
 #include "SProjectileBase.h"
 #include "SMagicProjectile.generated.h"
 
@@ -20,6 +21,9 @@ protected:
 
 	virtual void PostInitializeComponents() override;
 
+	UPROPERTY(EditAnywhere, Category = "Attack")
+	TSubclassOf<USActionEffect> HitEffect;
+	
 	UFUNCTION()
 	void OnActorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
