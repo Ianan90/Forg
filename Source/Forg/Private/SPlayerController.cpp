@@ -5,6 +5,12 @@
 
 #include "Blueprint/UserWidget.h"
 
+void ASPlayerController::BeginPlayingState()
+{
+	Super::BeginPlayingState();
+	BlueprintBeginPlayingState();
+}
+
 void ASPlayerController::TogglePauseMenu()
 {
 
