@@ -14,6 +14,9 @@ class FORG_API ASPowerup_HealthPickup : public ASPowerupBase
 {
 	GENERATED_BODY()
 
+public:
+	FText GetInteractionText_Implementation(AActor* InstigatorPawn);
+	
 protected:
 	ASPowerup_HealthPickup();
 	
@@ -21,4 +24,7 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
 	float HealDelta;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Setup")
+	int32 CreditCost;
 };

@@ -5,16 +5,6 @@
 
 #include "Components/SphereComponent.h"
 
-void ASPowerupBase::Interact_Implementation(APawn* InstigatorPawn)
-{
-	ISGameplayInterface::Interact_Implementation(InstigatorPawn);
-
-	if (bIsActive)
-	{
-		DeactivatePickup();
-	}
-}
-
 // Sets default values
 ASPowerupBase::ASPowerupBase()
 {
@@ -32,18 +22,21 @@ ASPowerupBase::ASPowerupBase()
 	ReactivationTime = 10.0f;
 }
 
-// Called when the game starts or when spawned
-void ASPowerupBase::BeginPlay()
+void ASPowerupBase::Interact_Implementation(APawn* InstigatorPawn)
 {
-	Super::BeginPlay();
-	
+	ISGameplayInterface::Interact_Implementation(InstigatorPawn);
+
+	if (bIsActive)
+	{
+		DeactivatePickup();
+	}
 }
 
-// Called every frame
-void ASPowerupBase::Tick(float DeltaTime)
+FText ASPowerupBase::GetInteractionText_Implementation(APawn* InstigatorPawn)
 {
-	Super::Tick(DeltaTime);
+	return ISGameplayInterface::GetInteractionText_Implementation(InstigatorPawn);
 
+	return FText::GetEmpty();
 }
 
 void ASPowerupBase::DeactivatePickup()

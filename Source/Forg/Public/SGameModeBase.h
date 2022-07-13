@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Engine/DataTable.h"
 #include "GameFramework/GameModeBase.h"
 #include "EnvironmentQuery/EnvQueryTypes.h"
 #include "SGameModeBase.generated.h"
@@ -10,6 +11,39 @@
 class UEnvQuery;
 class UEnvQueryInstanceBlueprintWrapper;
 class USSaveGame;
+class USEnemyData;
+
+USTRUCT(BlueprintType)
+struct FEnemyInfoRow: public  FTableRowBase
+{
+	GENERATED_BODY()
+
+public:
+
+	// Default Values
+	FEnemyInfoRow()
+	{
+		Weight = 1.0f;
+		SpawnCost = 5.0f;
+		KillReward = 20.0f;
+	}
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FPrimaryAssetId EnemyID;
+	// USEnemyData* EnemyData;
+	// TSubclassOf<AActor> EnemyClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float Weight;
+
+	// Some cost for the game mode to request enemy spawn
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float SpawnCost;
+
+	// Credit Reward
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float KillReward;
+};
 /**
  * 
  */
@@ -40,9 +74,12 @@ public:
 	void KillAllAI();
 
 protected:
-	
+
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
-	TSubclassOf<AActor> MinionClass;
+	UDataTable* EnemyTable;
+	
+	// UPROPERTY(EditDefaultsOnly, Category = "AI")
+	// TSubclassOf<AActor> MinionClass;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
 	UEnvQuery* SpawnBotQuery;
@@ -60,6 +97,8 @@ protected:
 
 	UFUNCTION()
 	void SpawnBotTimerElapsed();
+
+	void OnMonsterLoaded(FPrimaryAssetId PrimaryAssetId, FVector SpawnLocation);
 
 	UFUNCTION()
 	void OnQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus);
