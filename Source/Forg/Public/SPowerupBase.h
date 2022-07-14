@@ -36,8 +36,12 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Settings")
 	float ReactivationTime;
 
+	UPROPERTY(ReplicatedUsing="OnRep_IsActive")
 	bool bIsActive;
 
+	UFUNCTION()
+	void OnRep_IsActive();
+	
 	void DeactivatePickup();
 	
 	void ActivatePickup();

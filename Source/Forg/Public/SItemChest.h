@@ -32,7 +32,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	// Rep Notify binds to "OnRep_LidOpened" and calls it when that value is update on server. 
+	// Rep Notify "binds" to "OnRep_LidOpened" and calls it when that value is updated on server. 
 	UPROPERTY(ReplicatedUsing="OnRep_LidOpened", BlueprintReadOnly, SaveGame)
 	bool bLidOpened;
 

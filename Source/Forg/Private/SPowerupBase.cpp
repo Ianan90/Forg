@@ -4,6 +4,7 @@
 #include "SPowerupBase.h"
 
 #include "Components/SphereComponent.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values
 ASPowerupBase::ASPowerupBase()
@@ -11,6 +12,9 @@ ASPowerupBase::ASPowerupBase()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	// REPLICATION 
+	bReplicates =  true;
+	
 	SphereComp = CreateDefaultSubobject<USphereComponent>("SphereComp");
 	RootComponent = SphereComp;
 
@@ -19,23 +23,16 @@ ASPowerupBase::ASPowerupBase()
 
 	// Initialize Defaults
 	bIsActive = true;
-	ReactivationTime = 10.0f;
+	ReactivationTime = 10.0f;	
 }
 
 void ASPowerupBase::Interact_Implementation(APawn* InstigatorPawn)
 {
-	ISGameplayInterface::Interact_Implementation(InstigatorPawn);
-
-	if (bIsActive)
-	{
-		DeactivatePickup();
-	}
+	// Logic implementation in derived classes
 }
 
 FText ASPowerupBase::GetInteractionText_Implementation(APawn* InstigatorPawn)
 {
-	return ISGameplayInterface::GetInteractionText_Implementation(InstigatorPawn);
-
 	return FText::GetEmpty();
 }
 
@@ -55,6 +52,20 @@ void ASPowerupBase::ActivatePickup()
 
 void ASPowerupBase::SetActiveState(bool ActiveState)
 {
-	SetActorEnableCollision(ActiveState);
-	RootComponent->SetVisibility(ActiveState, true);
+	bIsActive = ActiveState;
+	OnRep_IsActive();
+}
+
+void ASPowerupBase::OnRep_IsActive()
+{
+	SetActorEnableCollision(bIsActive);
+	RootComponent->SetVisibility(bIsActive, true);
+}
+
+void ASPowerupBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	// DOREPLIFETIME - C = Class, V = Value
+	DOREPLIFETIME(ASPowerupBase, bIsActive);
 }

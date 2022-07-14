@@ -4,18 +4,16 @@
 #include "SInteractionComponent.h"
 
 #include "SGameplayInterface.h"
+#include "DrawDebugHelpers.h"
 #include "SWorldUserWidget.h"
-#include "Blueprint/UserWidget.h"
 
 static TAutoConsoleVariable<bool> CVArDebugDrawInteraction(TEXT("su.InteractionDebugDraw"), false, TEXT("Display Debug lines for Interaction Component."), ECVF_Cheat);
 
 
-// Sets default values for this component's properties
 USInteractionComponent::USInteractionComponent()
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
+	PrimaryComponentTick.TickGroup = TG_PostUpdateWork;
 
 	InteractTraceDistance = 500.0f;
 	InteractionRadius = 30.0f;
@@ -23,21 +21,20 @@ USInteractionComponent::USInteractionComponent()
 	CollisionChannel = ECC_WorldDynamic;
 }
 
-// Called when the game starts
 void USInteractionComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
-	// ...
-	
 }
 
-// Called every frame
 void USInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	FindBestInteractable();
+	APawn* MyPawn = Cast<APawn>(GetOwner());
+	if (MyPawn->IsLocallyControlled())
+	{
+		FindBestInteractable();
+	}
 }
 
 void USInteractionComponent::FindBestInteractable()
@@ -54,11 +51,7 @@ void USInteractionComponent::FindBestInteractable()
 	MyOwner->GetActorEyesViewPoint(EyeLocation, EyeRotation);
 
 	FVector End = EyeLocation + (EyeRotation.Vector() * InteractTraceDistance);
-
 	
-	//FHitResult Hit;
-	//bool bBlockingHit = GetWorld()->LineTraceSingleByObjectType(Hit, EyeLocation, End, ObjectQueryParams);
-
 	TArray<FHitResult> Hits;
 	FCollisionShape Shape;
 	Shape.SetSphere(InteractionRadius);
@@ -125,7 +118,7 @@ void USInteractionComponent::PrimaryInteract()
 
 void USInteractionComponent::ServerInteract_Implementation(AActor* InFocus)
 {
-	if (FocusedActor == nullptr)
+	if (InFocus == nullptr)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, "No focused actor to interact");
 		return;

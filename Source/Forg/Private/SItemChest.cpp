@@ -11,7 +11,7 @@ ASItemChest::ASItemChest()
 	PrimaryActorTick.bCanEverTick = true;
 
 	// SERVER REPLICATION
-	SetReplicates(true);
+	bReplicates = true;
 	
 	BaseMesh = CreateDefaultSubobject<UStaticMeshComponent>("BaseMesh");
 	RootComponent = BaseMesh;
@@ -43,10 +43,17 @@ void ASItemChest::Tick(float DeltaTime)
 
 void ASItemChest::Interact_Implementation(APawn* InstigatorPawn)
 {
-	// This called OnRep_LidOpened for CLIENTS
+	// This calls OnRep_LidOpened for CLIENTS as it's linked to a RepNotifier
 	bLidOpened = !bLidOpened;
+	
 	// Manually Called for the SERVER
 	OnRep_LidOpened();
+}
+
+void ASItemChest::OnRep_LidOpened()
+{
+	float CurvePitch = bLidOpened ? TargetPitch : 0.0f;
+	LidMesh->SetRelativeRotation(FRotator(CurvePitch, 0, 0));
 }
 
 void ASItemChest::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -55,10 +62,4 @@ void ASItemChest::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifet
 
 	// DOREPLIFETIME - C = Class, V = Value
 	DOREPLIFETIME(ASItemChest, bLidOpened);
-}
-
-void ASItemChest::OnRep_LidOpened()
-{
-	float CurvePitch = bLidOpened ? TargetPitch : 0.0f;
-	LidMesh->SetRelativeRotation(FRotator(CurvePitch, 0, 0));
 }

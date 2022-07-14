@@ -22,11 +22,6 @@ public:
 
 	void PrimaryInteract();
 
-	UPROPERTY(EditDefaultsOnly, Category = "UI")
-	TSubclassOf<USWorldUserWidget> DefaultWidgetClass;
-
-	UPROPERTY()
-	USWorldUserWidget* DefaultWidgetInstance;
 	
 protected:
 
@@ -49,4 +44,10 @@ protected:
 
 	UPROPERTY()
 	AActor* FocusedActor;
+
+	UPROPERTY()
+	USWorldUserWidget* DefaultWidgetInstance;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "UI")
+	TSubclassOf<USWorldUserWidget> DefaultWidgetClass;
 };
