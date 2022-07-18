@@ -36,6 +36,11 @@ bool ASPlayerState::RemoveCredits(int32 Delta)
 	return true;
 }
 
+bool ASPlayerState::HasEnoughCredits(int32 Delta) const
+{
+	return Delta >= GetCredits();
+}
+
 void ASPlayerState::OnRep_CreditsUpdate(int32 OldCredits)
 {
 	OnCreditsChanged.Broadcast(this, Credits, Credits - OldCredits);

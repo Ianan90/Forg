@@ -29,6 +29,9 @@ public:
 
 	// Remove Credits
 	bool RemoveCredits(int32 Delta);
+
+	// Send value of object and return if can be afforded 
+	bool HasEnoughCredits(int32 Delta) const;
 	
 	// State update for when Credits spent
 	UPROPERTY(BlueprintAssignable, Category = "Credits")

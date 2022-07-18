@@ -9,6 +9,7 @@
 #include "SActionComponent.h"
 #include "SAttributeComponent.h"
 #include "SInteractionComponent.h"
+#include "SPlayerState.h"
 #include "SProjectileBase.h"
 #include "Components/CapsuleComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -135,4 +136,13 @@ FVector ASCharacter::GetPawnViewLocation() const
 void ASCharacter::HealSelf(float Amount)
 {
 	AttributeComp->ApplyHealthChange(this, Amount);
+}
+
+void ASCharacter::AddCredits(float Amount)
+{
+	ASPlayerState* PS = Cast<ASPlayerState>(GetPlayerState());
+	if (PS)
+	{
+		PS->AddCredits(Amount);
+	}
 }

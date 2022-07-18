@@ -15,7 +15,7 @@ class FORG_API ASPowerup_HealthPickup : public ASPowerupBase
 	GENERATED_BODY()
 
 public:
-	FText GetInteractionText_Implementation(AActor* InstigatorPawn);
+	FText GetInteractionText_Implementation(APawn* InstigatorPawn);
 	
 protected:
 	ASPowerup_HealthPickup();

@@ -4,6 +4,7 @@
 #include "SPowerup_HealthPickup.h"
 
 #include "SAttributeComponent.h"
+#include "SPlayerState.h"
 
 #define LOCTEXT_NAMESPACE "InteractableActors"
 
@@ -22,16 +23,22 @@ void ASPowerup_HealthPickup::Interact_Implementation(APawn* InstigatorPawn)
 		return;
 	}
 
-	USAttributeComponent* AttributeComp = Cast<USAttributeComponent>(InstigatorPawn->GetComponentByClass(USAttributeComponent::StaticClass()));
-	if (!AttributeComp->IsFullHealth())
+	USAttributeComponent* AttributeComp = USAttributeComponent::GetAttributes(InstigatorPawn);
+	// Check if not already at max health
+	if (ensure(AttributeComp) && !AttributeComp->IsFullHealth())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Healing!"));
-		AttributeComp->ApplyHealthChange(this, HealDelta);
-		DeactivatePickup();
+		if (ASPlayerState* PS = InstigatorPawn->GetPlayerState<ASPlayerState>())
+		{
+			if (PS->RemoveCredits(CreditCost) && AttributeComp->ApplyHealthChange(this, AttributeComp->GetHealthMax()))
+			{
+				// Only activate if healed successfully
+				DeactivatePickup();
+			}
+		}
 	}
 }
 
-FText ASPowerup_HealthPickup::GetInteractionText_Implementation(AActor* InstigatorPawn)
+FText ASPowerup_HealthPickup::GetInteractionText_Implementation(APawn* InstigatorPawn)
 {
 	
 	USAttributeComponent* AttributeComp = USAttributeComponent::GetAttributes(InstigatorPawn);
@@ -39,9 +46,15 @@ FText ASPowerup_HealthPickup::GetInteractionText_Implementation(AActor* Instigat
 	{
 		return LOCTEXT("HealthPotion_FullHealthWarning", "Already at full health!"); 
 	}
+	
+	ASPlayerState* PS = InstigatorPawn->GetPlayerState<ASPlayerState>();
+	if (PS)
+	{
+		if(!AttributeComp->IsFullHealth() && PS->HasEnoughCredits(CreditCost))
+		return FText::Format(LOCTEXT("HealthPotion_InteractMessage", "Not enough credits!"), CreditCost); 
+	}
 
-	return FText::Format(LOCTEXT("HealthPotion_InteractMessage", "Cost {0} Credits. Restores health to full"), CreditCost); 
- 
+	return FText::Format(LOCTEXT("HealthPotion_InteractMessage", "Cost {0} Credits. Restores health to maximum."), CreditCost);
 }
 
 #undef LOCTEXT_NAMESPACE

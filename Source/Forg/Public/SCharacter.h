@@ -28,6 +28,9 @@ public:
 	UFUNCTION(Exec)
 	void HealSelf(float Amount = 100);
 
+	UFUNCTION(Exec)
+	void AddCredits(float Amount = 100);
+
 protected:
 	virtual void PostInitializeComponents() override;
 	
